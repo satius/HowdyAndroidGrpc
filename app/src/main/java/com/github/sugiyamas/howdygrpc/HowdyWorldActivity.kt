@@ -5,40 +5,43 @@ import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
+import androidx.databinding.DataBindingUtil
 import com.github.sugiyamas.grpc.howdy.GreeterGrpcKt
 import com.github.sugiyamas.grpc.howdy.HowdyRequest
+import com.github.sugiyamas.howdygrpc.databinding.ActivityHowdyworldBinding
 import io.grpc.ManagedChannel
 import io.grpc.ManagedChannelBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class HowdyWorldActivity : ScopedActivity() {
 
-    private val sendButton by lazy { findViewById<Button>(R.id.send_button) }
-    private val hostEdit by lazy { findViewById<EditText>(R.id.host_edit_text) }
-    private val portEdit by lazy { findViewById<EditText>(R.id.port_edit_text) }
-    private val messageEdit by lazy { findViewById<EditText>(R.id.message_edit_text) }
-    private val resultText by lazy { findViewById<TextView>(R.id.grpc_response_text) }
+class HowdyWorldActivity : ScopedActivity(), HowdyWorldView {
+
+    private lateinit var binding: ActivityHowdyworldBinding
+    override val vm: HowdyWorldViewModel = HowdyWorldViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_howdyworld)
-        resultText.movementMethod = ScrollingMovementMethod()
+        binding = DataBindingUtil.setContentView<ActivityHowdyworldBinding>(
+            this,
+            R.layout.activity_howdyworld
+        ).also {
+            it.vm = vm
+            it.handlers = this
+            it.grpcResponseText.movementMethod = ScrollingMovementMethod()
+        }
     }
 
-    fun sendMessage(view: View?) {
+    override fun onRequestButtonClick(view: View) {
         (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
-            .hideSoftInputFromWindow(hostEdit.windowToken, 0)
-        sendButton.isEnabled = false
-        resultText.text = ""
+            .hideSoftInputFromWindow(binding.hostEditText.windowToken, 0)
+        binding.sendButton.isEnabled = false
+        binding.grpcResponseText.text = ""
 
-        val port = portEdit.text.toString().toIntOrNull() ?: return
-        val host = hostEdit.text.toString()
-        val message = messageEdit.text.toString()
+        val port = binding.portEditText.text.toString().toIntOrNull() ?: return
+        val host = binding.hostEditText.text.toString()
+        val message = binding.messageEditText.text.toString()
         val channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build()
         launch { requestSayHowdy(channel, message) }
     }
@@ -61,8 +64,8 @@ class HowdyWorldActivity : ScopedActivity() {
     }
 
     private fun finalize(channel: ManagedChannel, resultStr: String?) {
-        resultStr?.let { resultText.text = it }
-        sendButton.isEnabled = true
+        resultStr?.let { binding.grpcResponseText.text = it }
+        binding.sendButton.isEnabled = true
         channel.shutdown()
     }
 
