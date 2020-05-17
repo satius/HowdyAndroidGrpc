@@ -1,58 +1,76 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".HowdyWorldActivity">
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="com.github.sugiyamas.howdygrpc.HowdyWorldViewModel" />
+
+        <variable
+            name="handlers"
+            type="com.github.sugiyamas.howdygrpc.HowdyWorldEventHandlers" />
+    </data>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/host_edit_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:hint="Enter Host"
+                android:text="@={vm.hostText}" />
+
+            <EditText
+                android:id="@+id/port_edit_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Enter Port"
+                android:inputType="numberDecimal"
+                android:text="@={vm.portText}" />
+        </LinearLayout>
+
 
         <EditText
-            android:id="@+id/host_edit_text"
-            android:layout_width="0dp"
+            android:id="@+id/message_edit_text"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:hint="Enter Host" />
+            android:hint="Enter message to send"
+            android:text="@={vm.messageText}" />
 
-        <EditText
-            android:id="@+id/port_edit_text"
-            android:layout_width="0dp"
+        <Button
+            android:id="@+id/send_button"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Enter Port"
-            android:inputType="numberDecimal" />
+            android:onClick="@{handlers::onRequestButtonClick}"
+            android:text="Send Grpc Request" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:text="@{vm.resultText}"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/grpc_response_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical"
+            android:textSize="16sp" />
+
     </LinearLayout>
 
+</layout>
 
-    <EditText
-        android:id="@+id/message_edit_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter message to send" />
-
-    <Button
-        android:id="@+id/send_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="sendMessage"
-        android:text="Send Grpc Request" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp"
-        android:text="Response:"
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/grpc_response_text"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="vertical"
-        android:textSize="16sp" />
-
-</LinearLayout>
