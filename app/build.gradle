@@ -28,9 +28,12 @@ android {
 protobuf {
     protoc { artifact = 'com.google.protobuf:protoc:3.11.0' }
     plugins {
-        grpc { artifact = "io.grpc:protoc-gen-grpc-java:$grpc_version"
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:$grpc_version"
         }
-        grpckt { artifact = "io.grpc:protoc-gen-grpc-kotlin:0.1.1" }
+        grpckt {
+            artifact = "io.grpc:protoc-gen-grpc-kotlin:0.1.1"
+        }
     }
     generateProtoTasks {
         all().each { task ->
@@ -38,8 +41,9 @@ protobuf {
                 java { option 'lite' }
             }
             task.plugins {
-                grpc { // Options added to --grpc_out
-                    option 'lite' }
+                grpc {
+                    option 'lite'
+                }
                 grpckt {
                     option 'lite'
                 }
