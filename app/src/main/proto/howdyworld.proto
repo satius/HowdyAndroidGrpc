@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.github.sugiyamas.grpc.howdy";
+option java_outer_classname = "HowdyWorldProto";
+option objc_class_prefix = "HOW";
+option go_package = "com.github.sugiyamas/howdyworld";
+
+package howdyworld;
+
+// The greeting service definition.
+service Greeter {
+  // Sends a greeting
+  rpc SayHowdy (HowdyRequest) returns (HowdyReply) {}
+}
+
+// The request message containing the user's name.
+message HowdyRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings
+message HowdyReply {
+  string message = 1;
+}
